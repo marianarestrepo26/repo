@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tareas - MiniOS</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+            height: 100vh;
+            overflow: auto;
+        }
+        
+        .app-header {
+            background: #27ae60;
+            color: white;
+            padding: 20px;
+            margin: -20px -20px 20px -20px;
+            text-align: center;
+        }
+        
+        .app-header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        
+        .app-header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        
+        .tasks-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .task-form {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="text"], 
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #27ae60;
+        }
+        
+        .status-options {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .status-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .task-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #27ae60;
+            transition: transform 0.2s ease;
+        }
+        
+        .task-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .task-card.pending {
+            border-left-color: #f39c12;
+        }
+        
+        .task-card.in-progress {
+            border-left-color: #3498db;
+        }
+        
+        .task-card.completed {
+            border-left-color: #27ae60;
+        }
+        
+        .task-card.overdue {
+            border-left-color: #e74c3c;
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .task-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+            flex: 1;
+        }
+        
+        .task-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 10px;
+        }
+        
+        .status-pending {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .status-in-progress {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status-completed {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .status-overdue {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        
+        .task-description {
+            color: #34495e;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .task-progress {
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #27ae60;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .task-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #27ae60;
+            font-weight: 500;
+        }
+        
+        .stats-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <h1>Gestor de Tareas</h1>
+        <p>Organiza y controla el progreso de tus actividades</p>
+    </div>
+    
+    <div class="tasks-container">
+        <div class="stats-section">
+            <h2>Estadísticas de Tareas</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Total de Tareas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Completadas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">En Progreso</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">1</div>
+                    <div class="stat-label">Vencidas</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="task-form">
+            <h2>Crear Nueva Tarea</h2>
+            <form>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-title">Título de la Tarea:</label>
+                        <input type="text" id="task-title" name="title" placeholder="Nombre de la tarea">
+                    </div>
+                    <div class="form-group">
+                        <label for="task-category">Categoría:</label>
+                        <select id="task-category" name="category">
+                            <option value="trabajo">Trabajo</option>
+                            <option value="personal">Personal</option>
+                            <option value="estudio">Estudio</option>
+                            <option value="salud">Salud</option>
+                            <option value="hogar">Hogar</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-due-date">Fecha Límite:</label>
+                        <input type="date" id="task-due-date" name="due-date">
+                    </div>
+                    <div class="form-group">
+                        <label>Estado:</label>
+                        <div class="status-options">
+                            <div class="status-option">
+                                <input type="radio" id="status-pending" name="status" value="pending" checked>
+                                <label for="status-pending">Pendiente</label>
+                            </div>
+                            <div class="status-option">
+                                <input type="radio" id="status-progress" name="status" value="in-progress">
+                                <label for="status-progress">En Progreso</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="task-description">Descripción:</label>
+                    <textarea id="task-description" name="description" placeholder="Describe los detalles de la tarea..."></textarea>
+                </div>
+            </form>
+        </div>
+        
+        <div class="tasks-grid">
+            <div class="task-card completed">
+                <div class="task-header">
+                    <h3 class="task-title">Completar informe mensual</h3>
+                    <span class="task-status status-completed">Completada</span>
+                </div>
+                <div class="task-meta">
+                    <span>Categoría: Trabajo</span>
+                    <span>Vence: 15/12/2024</span>
+                </div>
+                <div class="task-description">
+                    Finalizar y enviar el informe mensual de actividades al equipo directivo.
+                </div>
+                <div class="task-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%"></div>
+                    </div>
+                    <div class="progress-text">Progreso: 100%</div>
+                </div>
+                <div class="task-actions">
+                    <div class="task-checkbox">
+                        <input type="checkbox" checked>
+                        <label>Tarea completada</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="task-card in-progress">
+                <div class="task-header">
+                    <h3 class="task-title">Preparar presentación</h3>
+                    <span class="task-status status-in-progress">En Progreso</span>
+                </div>
+                <div class="task-meta">
+                    <span>Categoría: Trabajo</span>
+                    <span>Vence: 20/12/2024</span>
+                </div>
+                <div class="task-description">
+                    Crear slides para la presentación del proyecto Q4 con análisis de resultados y métricas.
+                </div>
+                <div class="task-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 65%"></div>
+                    </div>
+                    <div class="progress-text">Progreso: 65%</div>
+                </div>
+                <div class="task-actions">
+                    <div class="task-checkbox">
+                        <input type="checkbox">
+                        <label>Marcar como completada</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="task-card pending">
+                <div class="task-header">
+                    <h3 class="task-title">Revisión médica</h3>
+                    <span class="task-status status-pending">Pendiente</span>
+                </div>
+                <div class="task-meta">
+                    <span>Categoría: Salud</span>
+                    <span>Vence: 22/12/2024</span>
+                </div>
+                <div class="task-description">
+                    Agendar y asistir a la revisión médica anual. Llevar exámenes del año anterior.
+                </div>
+                <div class="task-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text">Progreso: 0%</div>
+                </div>
+                <div class="task-actions">
+                    <div class="task-checkbox">
+                        <input type="checkbox">
+                        <label>Marcar como completada</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="task-card overdue">
+                <div class="task-header">
+                    <h3 class="task-title">Pago de servicios</h3>
+                    <span class="task-status status-overdue">Vencida</span>
+                </div>
+                <div class="task-meta">
+                    <span>Categoría: Personal</span>
+                    <span>Vencía: 10/12/2024</span>
+                </div>
+                <div class="task-description">
+                    Realizar el pago de los servicios básicos del mes (electricidad, agua, internet).
+                </div>
+                <div class="task-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text">Progreso: 0% - URGENTE</div>
+                </div>
+                <div class="task-actions">
+                    <div class="task-checkbox">
+                        <input type="checkbox">
+                        <label>Marcar como completada</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

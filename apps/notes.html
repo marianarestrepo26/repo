@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notas - MiniOS</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+            height: 100vh;
+            overflow: auto;
+        }
+        
+        .app-header {
+            background: #3498db;
+            color: white;
+            padding: 20px;
+            margin: -20px -20px 20px -20px;
+            text-align: center;
+        }
+        
+        .app-header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        
+        .app-header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        
+        .notes-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .note-form {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="text"], 
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="text"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .priority-options {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .priority-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .notes-list {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .note-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+        }
+        
+        .note-card.high-priority {
+            border-left-color: #e74c3c;
+        }
+        
+        .note-card.medium-priority {
+            border-left-color: #f39c12;
+        }
+        
+        .note-card.low-priority {
+            border-left-color: #27ae60;
+        }
+        
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .note-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .note-priority {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .priority-high {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .priority-medium {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .priority-low {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .note-category {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .note-content {
+            color: #34495e;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .note-footer {
+            color: #95a5a6;
+            font-size: 12px;
+            text-align: right;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <h1>Aplicación de Notas</h1>
+        <p>Organiza tus ideas y pensamientos importantes</p>
+    </div>
+    
+    <div class="notes-container">
+        <div class="note-form">
+            <h2>Crear Nueva Nota</h2>
+            <form>
+                <div class="form-group">
+                    <label for="note-title">Título de la Nota:</label>
+                    <input type="text" id="note-title" name="title" placeholder="Escribe el título de tu nota">
+                </div>
+                
+                <div class="form-group">
+                    <label for="note-category">Categoría:</label>
+                    <select id="note-category" name="category">
+                        <option value="personal">Personal</option>
+                        <option value="trabajo">Trabajo</option>
+                        <option value="estudio">Estudio</option>
+                        <option value="ideas">Ideas</option>
+                        <option value="proyectos">Proyectos</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Prioridad:</label>
+                    <div class="priority-options">
+                        <div class="priority-option">
+                            <input type="radio" id="priority-high" name="priority" value="high">
+                            <label for="priority-high">Alta</label>
+                        </div>
+                        <div class="priority-option">
+                            <input type="radio" id="priority-medium" name="priority" value="medium" checked>
+                            <label for="priority-medium">Media</label>
+                        </div>
+                        <div class="priority-option">
+                            <input type="radio" id="priority-low" name="priority" value="low">
+                            <label for="priority-low">Baja</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="note-content">Contenido:</label>
+                    <textarea id="note-content" name="content" placeholder="Escribe el contenido de tu nota aquí..."></textarea>
+                </div>
+            </form>
+        </div>
+        
+        <div class="notes-list">
+            <div class="note-card high-priority">
+                <div class="note-header">
+                    <h3 class="note-title">Reunión importante</h3>
+                    <span class="note-priority priority-high">Alta</span>
+                </div>
+                <div class="note-category">Categoría: Trabajo</div>
+                <div class="note-content">
+                    No olvidar preparar la presentación para la reunión de mañana. Incluir gráficos de ventas del último trimestre y propuestas para el próximo período.
+                </div>
+                <div class="note-footer">
+                    Creada: Hoy 09:30 AM
+                </div>
+            </div>
+            
+            <div class="note-card medium-priority">
+                <div class="note-header">
+                    <h3 class="note-title">Lista de compras</h3>
+                    <span class="note-priority priority-medium">Media</span>
+                </div>
+                <div class="note-category">Categoría: Personal</div>
+                <div class="note-content">
+                    Comprar: leche, pan, frutas, verduras para la cena del fin de semana. También revisar ofertas en el supermercado.
+                </div>
+                <div class="note-footer">
+                    Creada: Ayer 06:15 PM
+                </div>
+            </div>
+            
+            <div class="note-card low-priority">
+                <div class="note-header">
+                    <h3 class="note-title">Ideas para proyecto</h3>
+                    <span class="note-priority priority-low">Baja</span>
+                </div>
+                <div class="note-category">Categoría: Ideas</div>
+                <div class="note-content">
+                    Explorar la posibilidad de crear una aplicación móvil que ayude a las personas a organizar mejor su tiempo y tareas diarias.
+                </div>
+                <div class="note-footer">
+                    Creada: 2 días atrás
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

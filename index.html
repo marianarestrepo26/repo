@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniOS - Sistema Operativo Web</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="desktop">
+        <!-- Barra superior del sistema -->
+        <header class="taskbar">
+            <div class="system-logo">
+                <h1>MiniOS</h1>
+            </div>
+            <div class="system-time">
+                <span>Sistema Operativo Web</span>
+            </div>
+        </header>
+
+        <!-- Panel de navegación -->
+        <nav class="app-launcher">
+            <h2>Aplicaciones Disponibles</h2>
+            
+            <!-- Controles de navegación usando radio buttons -->
+            <div class="app-selector">
+                <input type="radio" id="home" name="app" value="home" checked>
+                <label for="home" class="app-button">Inicio</label>
+
+                <input type="radio" id="notes" name="app" value="notes">
+                <label for="notes" class="app-button">Notas</label>
+
+                <input type="radio" id="tasks" name="app" value="tasks">
+                <label for="tasks" class="app-button">Tareas</label>
+
+                <input type="radio" id="weather" name="app" value="weather">
+                <label for="weather" class="app-button">Clima</label>
+            </div>
+        </nav>
+
+        <!-- Área principal de contenido -->
+        <main class="main-content">
+            <!-- Pantalla de inicio -->
+            <div class="welcome-screen" id="home-content">
+                <h2>Bienvenido a MiniOS</h2>
+                <p>Selecciona una aplicación del panel izquierdo para comenzar.</p>
+                <div class="system-info">
+                    <h3>Información del Sistema</h3>
+                    <ul>
+                        <li>Versión: MiniOS 1.0</li>
+                        <li>Tecnología: HTML + CSS</li>
+                        <li>Aplicaciones instaladas: 3</li>
+                        <li>Estado: Funcionando correctamente</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Iframes para las aplicaciones -->
+            <iframe src="apps/notes.html" class="app-frame" id="notes-frame"></iframe>
+            <iframe src="apps/homeworks.html" class="app-frame" id="tasks-frame"></iframe>
+            <iframe src="apps/weather.html" class="app-frame" id="weather-frame"></iframe>
+        </main>
+    </div>
+</body>
+</html>
